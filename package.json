@@ -1,6 +1,10 @@
 {
   "name": "airbnb_clone",
   "private": true,
+  "scripts": {
+    "dev": "./bin/webpack-dev-server",
+    "build": "./bin/rails webpacker:compile"
+  },
   "dependencies": {
     "@babel/preset-react": "^7.0.0",
     "@rails/webpacker": "^5.4.0",
