@@ -1,2 +1,1 @@
-// home.js
-import '@src/home';
+import '@src/home'
