@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Layout from '@src/layout'
+import BookingWidget from './bookingWidget'
 import { handleErrors } from '@utils/fetchHelper'
 
 import './property.scss'
@@ -47,7 +48,7 @@ class Property extends React.Component {
     return (
       <Layout>
         <div className="property-image mb-3" style={{ backgroundImage: `url(${image_url})` }} />
-        <div className="container">
+        <div className="container property">
           <div className="row">
             <div className="info col-12 col-lg-8">
               <div className="mb-3">
@@ -67,6 +68,9 @@ class Property extends React.Component {
               <hr />
               <p>{description}</p>
             </div>
+            <div className="col-12 col-lg-4">
+              <BookingWidget property_id={id} price_per_night={price_per_night} />
+            </div>
           </div>
         </div>
       </Layout>
@@ -74,12 +78,4 @@ class Property extends React.Component {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const node = document.getElementById('params')
-  const data = JSON.parse(node.getAttribute('data-params'))
-
-  ReactDOM.render(
-    <Property property_id={data.property_id} />,
-    document.body.appendChild(document.createElement('div')),
-  )
-})
+export default Property
