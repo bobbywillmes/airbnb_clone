@@ -23,6 +23,15 @@ module Api
       render 'api/bookings/index'
     end
 
+    def details
+      @id = params[:id]
+      @booking = Booking.find_by(id: params[:id])
+      @nights = (@booking.end_date - @booking.start_date).to_i
+      @charge = Charge.find_by(booking_id: @booking.id)
+      @property = Property.find_by(id: @booking.property_id)
+      return render json: {error: 'booking not found'}, status: :not_found if !@booking
+    end
+
     private
 
     def booking_params
