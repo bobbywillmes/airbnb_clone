@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { safeCredentials, handleErrors } from '@utils/fetchHelper'
+import { apiLogin } from '../../api/user'
+import { withAlert } from 'react-alert'
 
 class LoginWidget extends React.Component {
   state = {
@@ -16,40 +18,31 @@ class LoginWidget extends React.Component {
   }
 
   login = (e) => {
-    console.log(`LoginWidget - login() `)
-    if (e) { e.preventDefault() }
-    this.setState({
-      error: '',
-    })
-    fetch('/api/sessions', safeCredentials({
-      method: 'POST',
-      body: JSON.stringify({
-        user: {
-          email: this.state.email,
-          password: this.state.password,
-        }
-      })
-    }))
-      .then(handleErrors)
-      .then(data => {
-        console.log(data)
-        if (data.success) {
+    e.preventDefault()
+    let formData = new FormData()
+    formData.append('user[email]', this.state.email)
+    formData.append('user[password]', this.state.password)
+    apiLogin(formData)
+      .then(res => {
+        if (res.status === 201) {
+          this.props.updateAuthenticated(true)
           const params = new URLSearchParams(window.location.search)
           const redirect_url = params.get('redirect_url') || '/'
           window.location = redirect_url
         } else {
-          console.log(`could not log in`)
+          this.props.alert.show('incorrect credentials')
         }
       })
       .catch(error => {
         console.log(error)
+        this.props.alert.warning('error trying to login')
         this.setState({
-          error: 'Could not log in.',
+          error: 'Could not log in.'
         })
       })
   }
 
-  render () {
+  render() {
     const { email, password, error } = this.state
     return (
       <React.Fragment>
@@ -59,11 +52,11 @@ class LoginWidget extends React.Component {
           <button type="submit" className="btn btn-danger btn-block btn-lg">Log in</button>
           {error && <p className="text-danger mt-2">{error}</p>}
         </form>
-        <hr/>
+        <hr />
         <p className="mb-0">Don't have an account? <a className="text-primary" onClick={this.props.toggle}>Sign up</a></p>
       </React.Fragment>
     )
   }
 }
 
-export default LoginWidget
+export default withAlert()(LoginWidget)

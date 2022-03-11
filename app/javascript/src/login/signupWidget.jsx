@@ -1,13 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { safeCredentials, handleErrors } from '@utils/fetchHelper'
+import { apiSignup, apiLogin } from '../../api/user'
+import { displaySignupErrors } from '../utils/errorHelper'
 
 class SignupWidget extends React.Component {
   state = {
     email: '',
     password: '',
     username: '',
-    error: '',
   }
 
   handleChange = (e) => {
@@ -17,73 +18,68 @@ class SignupWidget extends React.Component {
   }
 
   signup = (e) => {
-    if (e) { e.preventDefault(); }
-    this.setState({
-      error: '',
-    });
-    fetch('/api/users', safeCredentials({
-      method: 'POST',
-      body: JSON.stringify({
-        user: {
-          email: this.state.email,
-          password: this.state.password,
-          username: this.state.username,
+    e.preventDefault()
+    let formData = new FormData()
+    formData.append('user[username]', this.state.username)
+    formData.append('user[email]', this.state.email)
+    formData.append('user[password]', this.state.password)
+    // signup then login
+    apiSignup(formData)
+      .then(res => {
+        if (res.status === 201) {
+          // console.log(`created new user`)
+          apiLogin(formData)
+            .then(res => {
+              if (res.data.success === true) {
+                this.props.updateAuthenticated(true)
+                const params = new URLSearchParams(window.location.search)
+                const redirect_url = params.get('redirect_url') || '/'
+                window.location = redirect_url
+              }
+            })
+        } else {
+          const error = res.data.error
+          displaySignupErrors(error)
         }
       })
-    }))
-      .then(handleErrors)
-      .then(data => {
-        if (data.user) {
-          this.login();
-        }
+      .catch(err => {
+        console.log(`axios .catch ---`)
+        console.log(err)
       })
-      .catch(error => {
-        this.setState({
-          error: 'Could not sign up.',
-        })
-      })
+
   }
 
-  login = (e) => {
-    if (e) { e.preventDefault(); }
-    this.setState({
-      error: '',
-    });
-    fetch('/api/sessions', safeCredentials({
-      method: 'POST',
-      body: JSON.stringify({
-        user: {
-          email: this.state.email,
-          password: this.state.password,
-        }
-      })
-    }))
-      .then(handleErrors)
-      .then(data => {
-        if (data.success) {
-          const params = new URLSearchParams(window.location.search);
-          const redirect_url = params.get('redirect_url') || '/';
-          window.location = redirect_url;
-        }
-      })
-      .catch(error => {
-        this.setState({
-          error: 'Could not log in.',
-        })
-      })
+  // form inputs are readonly by default to prevent autofill, onFocus enables them
+  enableInput = (e) => {
+    e.target.removeAttribute('readonly')
   }
 
-  render () {
+  render() {
     const { email, password, username, error } = this.state;
     return (
       <React.Fragment>
-        <form onSubmit={this.signup}>
-          <input name="username" type="text" className="form-control form-control-lg mb-3" placeholder="Username" value={username} onChange={this.handleChange} required />
-          <input name="email" type="text" className="form-control form-control-lg mb-3" placeholder="Email" value={email} onChange={this.handleChange} required />
-          <input name="password" type="password" className="form-control form-control-lg mb-3" placeholder="Password" value={password} onChange={this.handleChange} required />
+        <form id="signup" onSubmit={this.signup} autoComplete="off">
+
+          <div className="mb-2">
+            <label htmlFor="signupusername" className="form-label">Username</label>
+            <input type="text" name="username" readOnly onFocus={this.enableInput} className="form-control" placeholder="ramblinman" id="signupusername" aria-describedby="signupusernamehelp" onChange={this.handleChange} value={username} />
+            <div id="signupusernamehelp" className="form-text">Your public username on Airbnb</div>
+          </div>
+
+          <div className="mb-2">
+            <label htmlFor="signupemail" className="form-label">Email address</label>
+            <input type="email" name="email" readOnly onFocus={this.enableInput} className="form-control" placeholder="ramblinman86@gmail.com" id="signupemail" aria-describedby="signupemailhelp" onChange={this.handleChange} value={email} />
+            <div id="signupemailhelp" className="form-text">We'll never share your email with anyone else</div>
+          </div>
+
+          <div className="mb-2">
+            <label htmlFor="signuppassword" className="form-label">Password</label>
+            <input type="password" name="password" readOnly onFocus={this.enableInput} className="form-control" placeholder="••••••••" id="signuppassword" aria-describedby="signuppasswordhelp" onChange={this.handleChange} value={password} />
+            <div id="signuppasswordhelp" className="form-text">A strong &amp; unique password</div>
+          </div>
           <button type="submit" className="btn btn-danger btn-block btn-lg">Sign up</button>
         </form>
-        <hr/>
+        <hr />
         <p className="mb-0">Already have an account? <a className="text-primary" onClick={this.props.toggle}>Log in</a></p>
       </React.Fragment>
     )

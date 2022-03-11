@@ -10,6 +10,9 @@ const Layout = (props) => {
             <li className="nav-item">
               <a className="nav-link" href="/">Home</a>
             </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/login">Account</a>
+            </li>
           </ul>
         </div>
       </nav>

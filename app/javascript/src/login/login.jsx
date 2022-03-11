@@ -3,12 +3,14 @@ import Layout from '@src/layout'
 import LoginWidget from './loginWidget'
 import SignupWidget from './signupWidget'
 import { safeCredentials, handleErrors } from '@utils/fetchHelper'
+import { apiAuthenticated } from '../../api/user'
 
 import './login.scss'
 
 class Login extends React.Component {
   state = {
     authenticated: false,
+    username: undefined,
     show_login: true,
   }
 
@@ -18,6 +20,7 @@ class Login extends React.Component {
       .then(data => {
         this.setState({
           authenticated: data.authenticated,
+          username: data.username
         })
       })
   }
@@ -50,6 +53,10 @@ class Login extends React.Component {
       })
   }
 
+  updateAuthenticated = (status) => {
+    this.setState({ authenticated: status })
+  }
+
   render() {
     const { authenticated, show_login } = this.state
     if (authenticated) {
@@ -59,6 +66,7 @@ class Login extends React.Component {
             <div className="row">
               <div className="col-12 col-md-9 col-lg-6 mx-auto my-4">
                 <div className="border p-4">
+                  <p>Welcome {this.state.username}</p>
                   <p className="mb-0">You are already logged in 🙂</p>
                   <br />
                   <button className="btn btn-secondary" onClick={this.logout}>Log Out</button>
@@ -76,7 +84,7 @@ class Login extends React.Component {
           <div className="row">
             <div className="col-12 col-md-9 col-lg-6 mx-auto my-4">
               <div className="border p-4">
-                {show_login ? <LoginWidget toggle={this.toggle} /> : <SignupWidget toggle={this.toggle} />}
+                {show_login ? <LoginWidget toggle={this.toggle} updateAuthenticated={this.updateAuthenticated} /> : <SignupWidget toggle={this.toggle} updateAuthenticated={this.updateAuthenticated} />}
               </div>
             </div>
           </div>
