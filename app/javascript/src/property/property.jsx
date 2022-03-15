@@ -9,6 +9,7 @@ import './property.scss'
 class Property extends React.Component {
   state = {
     property: {},
+    user: {},
     loading: true,
   }
 
@@ -16,8 +17,10 @@ class Property extends React.Component {
     fetch(`/api/properties/${this.props.property_id}`)
       .then(handleErrors)
       .then(data => {
+        console.log(data)
         this.setState({
           property: data.property,
+          user: data.property.user,
           loading: false,
         })
       })
@@ -42,7 +45,6 @@ class Property extends React.Component {
       beds,
       baths,
       image_url,
-      user,
     } = property
   
     return (
@@ -54,7 +56,7 @@ class Property extends React.Component {
               <div className="mb-3">
                 <h3 className="mb-0">{title}</h3>
                 <p className="text-uppercase mb-0 text-secondary"><small>{city}</small></p>
-                <p className="mb-0"><small>Hosted by <b>{user.username}</b></small></p>
+                <p className="mb-0"><small>Hosted by <b>{this.state.user.username}</b></small></p>
               </div>
               <div>
                 <p className="mb-0 text-capitalize"><b>{property_type}</b></p>

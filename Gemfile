@@ -22,6 +22,8 @@ gem 'kaminari'
 # Use Stripe for receiving payments
 gem 'stripe'
 
+gem 'active_model_serializers'
+
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks (not using for React front-end)

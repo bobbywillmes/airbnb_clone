@@ -1,0 +1,51 @@
+#account {
+  .table {
+    td {
+      vertical-align: middle;
+    }
+  }
+  .properties {
+    h3 small {
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+    table {
+      $odd:      #f0ffe8;
+      $oddHover: #dffcd0;
+      $even:     #e8fdff;
+      $evenHover:#cef8fc;
+      tr.odd, tr.oddNoHover {
+        background: $odd;
+      }
+      tr.odd:hover {
+        background: $oddHover;
+      }
+      tr.odd td.expanded:hover {
+        background: $odd
+      }
+      tr.even, tr.evenNoHover {
+        background: $even;
+      }
+      tr.even:hover {
+        background: $evenHover;
+      }
+      tr.even td.expanded:hover {
+        background: $even
+      }
+    }
+    .bookings {
+      border: 1px solid red;
+      thead {
+        background: #fff
+      }
+      tbody {
+        tr.odd {
+          background: #eee;
+        }
+        tr.even {
+          background: #fff;
+        }
+      }
+    }
+  }
+}
