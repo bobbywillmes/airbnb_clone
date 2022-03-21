@@ -5,6 +5,14 @@
     }
   }
   .properties {
+    position: relative;
+    padding-top: 0.5rem;
+    #createNew {
+      position: absolute;
+      top: 0;
+      right: 0;
+      color: white;
+    }
     h3 small {
       font-size: 0.8rem;
       color: #aaa;

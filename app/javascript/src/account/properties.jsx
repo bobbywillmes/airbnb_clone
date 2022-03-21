@@ -33,13 +33,14 @@ class Properties extends React.Component {
         <td>{property.city}</td>
         <td>{property.price_per_night}</td>
         <td>{property.bookings.length}</td>
+        <td><a href={`/property/${property.id}/edit`}>Edit</a></td>
       </tr>
     ]
 
     if (this.state.expandedRows.includes(property.id)) {
       itemRows.push(
         <tr className={rowClass} key={"row-expanded" + property.id}>
-          <td className="expanded" colSpan={6}>
+          <td className="expanded" colSpan={7}>
             <table className="bookings">
               <thead>
                 <tr>
@@ -85,6 +86,7 @@ class Properties extends React.Component {
             <th>City</th>
             <th>Price/Night</th>
             <th>Bookings</th>
+            <th>Edit</th>
           </tr>
         </thead>
         <tbody>

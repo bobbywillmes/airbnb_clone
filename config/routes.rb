@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   root to: 'static_pages#home'
 
+  get '/property/new'           => 'static_pages#newProperty'
   get '/property/:id'           => 'static_pages#property'
+  get '/property/:id/edit'      => 'static_pages#editProperty'
   get '/login'                  => 'static_pages#login'
   get '/account'                => 'static_pages#account'
   get '/booking/:id/success'    => 'static_pages#booking'
@@ -16,9 +18,11 @@ Rails.application.routes.draw do
     delete '/sessions'                => 'sessions#destroy'
     get  '/authenticated'             => 'sessions#authenticated'
 
+    post '/properties'                => 'properties#create'
     get '/properties/'                => 'properties#index'
     get '/properties/:id'             => 'properties#show'
     get '/properties/:id/bookings'    => 'bookings#get_property_bookings'
+    patch '/properties/:id'           => 'properties#update'
 
     get '/booking/:id/success'        => 'bookings#details'
 
