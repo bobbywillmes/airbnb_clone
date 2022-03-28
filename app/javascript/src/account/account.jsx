@@ -1,6 +1,6 @@
 import React from 'react'
 import Layout from '@src/layout'
-import { apiAuthenticated, apiGetUserProperties, apiGetUserInfo } from '../../api/user'
+import { apiAuthenticated, apiGetUserInfo, apiLogout } from '../../api/user'
 import './account.scss'
 import Properties from './properties'
 import Bookings from './bookings'
@@ -43,6 +43,18 @@ class Account extends React.Component {
       })
   }
 
+  logout = () => {
+    apiLogout()
+      .then(res => {
+        if (res.data.success) {
+          this.setState({ authenticated: false, show_login: true })
+          const params = new URLSearchParams(window.location.search)
+          const redirect_url = params.get('redirect_url') || '/'
+          window.location = redirect_url
+        }
+      })
+  }
+
   render() {
     return (
       <Layout>
@@ -51,6 +63,7 @@ class Account extends React.Component {
             <div className="row">
               <div className="col">
                 <h3>Welcome {this.state.username}</h3>
+                <button id="logoutBtn" className="btn btn-secondary" onClick={this.logout}>Logout</button>
                 <hr />
                 <div className="properties">
                   <h3>My properties &amp; Bookings  <small>(click row to see bookings)</small></h3>

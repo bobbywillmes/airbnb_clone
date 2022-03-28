@@ -3,12 +3,4 @@ class PropertySerializer < ActiveModel::Serializer
   has_many :bookings
   has_one :user
 
-  def image_url
-    if object.image.attached?
-      {
-        url: rails_blob_url(object.image)
-      }
-    end
-  end
-
 end

@@ -23,6 +23,7 @@ Rails.application.routes.draw do
     get '/properties/:id'             => 'properties#show'
     get '/properties/:id/bookings'    => 'bookings#get_property_bookings'
     patch '/properties/:id'           => 'properties#update'
+    delete '/properties/image/:id'    => 'properties#deleteImage'
 
     get '/booking/:id/success'        => 'bookings#details'
 

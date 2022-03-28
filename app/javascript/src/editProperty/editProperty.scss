@@ -18,4 +18,11 @@
   #submitUpdate {
     margin: 1rem;
   }
+  .images {
+    border-top: 3px dotted #d11515;
+    img {
+      max-width: 300px;
+      margin: 0.5rem;
+    }
+  }
 }

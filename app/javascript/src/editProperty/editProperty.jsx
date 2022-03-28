@@ -1,15 +1,59 @@
 import React from 'react'
 import Layout from '@src/layout'
 import { apiAuthenticated } from '../../api/user'
-import { apiEditProperty } from '../../api/property'
+import { apiDeleteImage, apiEditProperty } from '../../api/property'
 import { handleErrors } from '@utils/fetchHelper'
+import { withAlert } from 'react-alert'
+import Resizer from "react-image-file-resizer";
+
+
+function ShowImages(props) {
+  if (props.images == undefined) {
+    return <p>no images.</p>
+  }
+  if (props.images.length > 0) {
+    const images = props.images
+    return (
+      <React.Fragment>
+        {images.map(image => {
+          return (
+            <div key={image.id}>
+              <img id={image.id} src={image.image_url} alt="" className="img-responsive" />
+              <button className="btn btn-warning" onClick={props.handleImageDelete} data-imageid={image.id}>Delete Image</button>
+            </div>
+          )
+        })}
+      </React.Fragment>
+    )
+  }
+  return <p>no images.</p>
+}
+
+const resizeImage = (img) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      img,
+      2000, // max-width
+      2000, // max-height
+      "JPEG",  // file type
+      100,  // quality
+      0, // rotation
+      (uri) => {
+        resolve(uri);
+      },
+      "file" // output type
+    );
+  })
 
 class EditProperty extends React.Component {
-  state = { }
-
-
+  state = {
+  }
 
   componentDidMount() {
+    this.getPropertyData()
+  }
+
+  getPropertyData() {
     fetch(`/api/properties/${this.props.data.property_id}`)
       .then(handleErrors)
       .then(data => {
@@ -22,13 +66,17 @@ class EditProperty extends React.Component {
   }
 
   setPropertyAttributes = (property) => {
-    for(let attribute in property) {
-      this.setState({[attribute]: property[attribute]})
+    for (let attribute in property) {
+      this.setState({ [attribute]: property[attribute] })
     }
   }
 
   handleChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value })
+    if (e.target.name === 'newImages') {
+      this.setState({ 'newImages': e.target.files })
+    } else {
+      this.setState({ [e.target.name]: e.target.value })
+    }
   }
 
   handleSubmit = (e) => {
@@ -47,7 +95,7 @@ class EditProperty extends React.Component {
     formData.append('property[baths]', this.state.baths)
     apiEditProperty(this.state.id, formData)
       .then(res => {
-        if(res.status === 200) {
+        if (res.status === 200) {
           const params = new URLSearchParams(window.location.search)
           const redirect_url = params.get('redirect_url') || '/account'
           window.location = redirect_url
@@ -59,10 +107,58 @@ class EditProperty extends React.Component {
       })
   }
 
+  handleImageUpload = (e) => {
+    let formData = new FormData()
+    let newResizedImages = []
+    const fileListArray = Array.from(this.state.newImages)
+
+    // loop through fileListArray to resize each image, build formData, then upload images
+    for (let i = 0; i < fileListArray.length; i++) {
+      resizeImage(fileListArray[i])
+        .then(res => {
+          // push resized image to newResizedImages array
+          newResizedImages.push(res)
+          // check if last iteration
+          if (i === (fileListArray.length - 1)) {
+            this.setState({ newResizedImages: newResizedImages })
+            // create formData for new images
+            for (let i = 0; i < this.state.newResizedImages.length; i++) {
+              formData.append('property[images][]', this.state.newResizedImages[i]);
+            }
+            // upload new images
+            apiEditProperty(this.state.id, formData)
+              .then(res => {
+                if (res.status === 200) {
+                  console.log(`new images uploaded successfully`)
+                  this.getPropertyData()
+                }
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }
+        })
+    }
+  }
+
+  handleImageDelete = (e) => {
+    let imageID = e.currentTarget.parentNode.querySelector('img').getAttribute('id')
+    imageID = parseFloat(imageID)
+    apiDeleteImage(imageID)
+      .then(res => {
+        if (res.status === 200) {
+          let newImages = this.state.images
+          newImages = newImages.filter(image => image.id !== imageID)
+          this.setState({ images: newImages })
+          this.props.alert.show('image deleted')
+        }
+      })
+  }
+
   render() {
     return (
       <Layout>
-      <div id="editProperty">
+        <div id="editProperty">
           <div className="container">
             <div className="row">
               <div className="col">
@@ -115,8 +211,18 @@ class EditProperty extends React.Component {
                   </div>
 
                   <button id="submitUpdate" type="submit" className="btn btn-danger">Update Property</button>
-
                 </form>
+                <div className="images mb-3">
+                  <h4>Images</h4>
+                  <ShowImages images={this.state.images} handleImageDelete={this.handleImageDelete} />
+                  <hr />
+                  <div>
+                    <label htmlFor="upload">Upload one or more images</label> <br />
+                    <input type="file" id="imageUpload" name="newImages" onChange={this.handleChange} multiple />
+                    <br /> <br />
+                    <button id="uploadImages" className="btn btn-primary" onClick={this.handleImageUpload}>Upload Image(s)</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -126,4 +232,4 @@ class EditProperty extends React.Component {
   }
 }
 
-export default EditProperty
+export default withAlert()(EditProperty)

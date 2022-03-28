@@ -40,9 +40,14 @@ module Api
       render 'show', status: :ok
     end
 
+    def deleteImage
+      @attachment = ActiveStorage::Attachment.find(params[:id])
+      return render json: {message: 'image deleted', status: 200} if @attachment.purge
+    end
+
     private
       def property_params
-        params.require(:property).permit(:title, :description, :city, :country, :property_type, :price_per_night, :max_guests, :bedrooms, :beds, :baths, :user)
+        params.require(:property).permit(:title, :description, :city, :country, :property_type, :price_per_night, :max_guests, :bedrooms, :beds, :baths, :user, images: [])
       end
   end
 end

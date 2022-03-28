@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 export function apiLogin(formData) {
-  // console.log(`apiLogin() --`)
   return axios({
     method: 'post',
     url: '/api/sessions',
@@ -9,8 +8,14 @@ export function apiLogin(formData) {
   })
 }
 
+export function apiLogout() {
+  return axios({
+    method: 'delete',
+    url: '/api/sessions'
+  })
+}
+
 export function apiSignup(formData) {
-  // console.log(`apiSignup() --`)
   return axios({
     method: 'post',
     url: '/api/users',
@@ -26,7 +31,6 @@ export function apiAuthenticated() {
 }
 
 export function apiGetUserInfo(userId) {
-  // console.log(`apiGetUserInfo(${userId}) -- api/user.js`)
   return axios({
     method: 'get',
     url: `/api/user/${userId}`

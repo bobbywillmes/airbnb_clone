@@ -27,7 +27,7 @@ class LoginWidget extends React.Component {
         if (res.status === 201) {
           this.props.updateAuthenticated(true)
           const params = new URLSearchParams(window.location.search)
-          const redirect_url = params.get('redirect_url') || '/'
+          const redirect_url = params.get('redirect_url') || '/account'
           window.location = redirect_url
         } else {
           this.props.alert.show('incorrect credentials')
