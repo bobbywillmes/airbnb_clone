@@ -36,7 +36,7 @@ const resizeImage = (img) =>
       2000, // max-width
       2000, // max-height
       "JPEG",  // file type
-      100,  // quality
+      50,  // quality
       0, // rotation
       (uri) => {
         resolve(uri);
@@ -146,7 +146,7 @@ class EditProperty extends React.Component {
     imageID = parseFloat(imageID)
     apiDeleteImage(imageID)
       .then(res => {
-        if (res.status === 200) {
+        if (res.status === 204) {
           let newImages = this.state.images
           newImages = newImages.filter(image => image.id !== imageID)
           this.setState({ images: newImages })

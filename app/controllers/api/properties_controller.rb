@@ -42,7 +42,7 @@ module Api
 
     def deleteImage
       @attachment = ActiveStorage::Attachment.find(params[:id])
-      return render json: {message: 'image deleted', status: 200} if @attachment.purge
+      return render json: {message: 'image deleted', status: 204} if @attachment.purge
     end
 
     private
