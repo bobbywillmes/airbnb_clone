@@ -8,6 +8,10 @@ export function apiNewProperty(formData) {
   })
 }
 
+export function apiGetProperty(propertyId) {
+  return fetch(`/api/properties/${propertyId}`)
+}
+
 export function apiEditProperty(property_id, formData) {
   return axios({
     method: 'patch',
@@ -20,5 +24,12 @@ export function apiDeleteImage(imageId) {
   return axios({
     method: 'delete',
     url: `/api/properties/image/${imageId}`
+  })
+}
+
+export function apiGetPropertyBookings(propertyId) {
+  return axios({
+    method: 'get',
+    url: `/api/properties/${propertyId}/bookings`
   })
 }

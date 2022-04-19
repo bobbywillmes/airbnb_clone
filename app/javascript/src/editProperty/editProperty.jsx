@@ -18,7 +18,7 @@ function ShowImages(props) {
         {images.map(image => {
           return (
             <div key={image.id}>
-              <img id={image.id} src={image.image_url} alt="" className="img-responsive" />
+              <img id={image.id} src={image.src} alt="" className="img-responsive" />
               <button className="btn btn-warning" onClick={props.handleImageDelete} data-imageid={image.id}>Delete Image</button>
             </div>
           )

@@ -2,8 +2,24 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Layout from '@src/layout'
 import { handleErrors } from '@utils/fetchHelper'
+import placeholder from '../../assets/images/placeholder.png'
 
 import './home.scss'
+
+function Image(props) {
+  const property = props.property;
+  if (property.images.length > 0) {
+    return (
+      <div className="property-image mb-1 rounded" style={{ backgroundImage: `url(${property.images[0].src})` }} />
+    )
+  }
+  if (property.image_url) {
+    return (
+      <div className="property-image mb-1 rounded" style={{ backgroundImage: `url(${property.image_url})` }} />
+    )
+  }
+  return <img src={placeholder} alt="" />
+}
 
 class Home extends React.Component {
   state = {
@@ -44,7 +60,7 @@ class Home extends React.Component {
       })
   }
 
-  render () {
+  render() {
     const { properties, next_page, loading } = this.state;
     return (
       <Layout>
@@ -56,7 +72,8 @@ class Home extends React.Component {
               return (
                 <div key={property.id} className="col-6 col-lg-4 mb-4 property">
                   <a href={`/property/${property.id}`} className="text-body text-decoration-none">
-                    <div className="property-image mb-1 rounded" style={{ backgroundImage: `url(${property.image_url})` }} />
+                    {/* <div className="property-image mb-1 rounded" style={{ backgroundImage: `url(${property.image_url})` }} /> */}
+                    <Image property={property} />
                     <p className="text-uppercase mb-0 text-secondary"><small><b>{property.city}</b></small></p>
                     <h6 className="mb-0">{property.title}</h6>
                     <p className="mb-0"><small>${property.price_per_night} USD/night</small></p>

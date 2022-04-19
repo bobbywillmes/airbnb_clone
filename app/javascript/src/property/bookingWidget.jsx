@@ -7,35 +7,11 @@ import 'react-dates/lib/css/_datepicker.css'
 
 class BookingWidget extends React.Component {
   state = {
-    authenticated: false,
-    existingBookings: [],
     startDate: null,
     endDate: null,
     focusedInput: null,
     loading: false,
     error: false,
-  }
-
-  componentDidMount() {
-    fetch('/api/authenticated')
-      .then(handleErrors)
-      .then(data => {
-        this.setState({
-          authenticated: data.authenticated,
-        })
-      })
-    this.getPropertyBookings()
-  }
-
-  getPropertyBookings = () => {
-    fetch(`/api/properties/${this.props.property_id}/bookings`)
-      .then(handleErrors)
-      .then(data => {
-        console.log(data);
-        this.setState({
-          existingBookings: data.bookings,
-        })
-      })
   }
 
   initiateStripeCheckout = (booking_id) => {
@@ -91,11 +67,11 @@ class BookingWidget extends React.Component {
 
   onFocusChange = (focusedInput) => this.setState({ focusedInput })
 
-  isDayBlocked = day => this.state.existingBookings.filter(b => day.isBetween(b.start_date, b.end_date, null, '[)')).length > 0
+  isDayBlocked = day => this.props.existingBookings.filter(b => day.isBetween(b.start_date, b.end_date, null, '[)')).length > 0
 
   render() {
-    const { authenticated, startDate, endDate, focusedInput } = this.state
-    if (!authenticated) {
+    const { startDate, endDate, focusedInput } = this.state
+    if (!this.props.authenticated) {
       return (
         <div className="border p-4 mb-4">
           Please <a href={`/login?redirect_url=${window.location.pathname}`}>log in</a> to make a booking.

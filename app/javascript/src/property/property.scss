@@ -6,3 +6,26 @@
     height: 400px;
   }
 }
+
+@media (max-width: 1200px) {
+  .property {
+    max-width: 100% !important;
+  }
+}
+
+.property {
+  #mainImage {
+    max-width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #imageRow {
+    border: 1px solid green;
+    div {
+      padding: 0;
+    }
+  }
+  .hosted-by {
+    font-weight: 500;
+  }
+}
