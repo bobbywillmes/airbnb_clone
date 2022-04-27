@@ -1,4 +1,5 @@
 import React from 'react'
+import './layout.scss'
 
 const Layout = (props) => {
   return (
@@ -19,7 +20,9 @@ const Layout = (props) => {
           </ul>
         </div>
       </nav>
-      {props.children}
+      <div className="contentWrap">
+        {props.children}
+      </div>
       <footer className="p-3 bg-light">
         <div>
           <p className="mr-3 mb-0 text-secondary">Airbnb Clone</p>

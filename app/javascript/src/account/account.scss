@@ -1,3 +1,8 @@
+@media (max-width: 1200px) {
+  #account {
+    max-width: 100% !important;
+  }
+}
 #account {
   .table {
     td {
@@ -23,33 +28,35 @@
       color: #aaa;
     }
     table {
-      $odd:      #f0ffe8;
+      $odd: #f0ffe8;
       $oddHover: #dffcd0;
-      $even:     #e8fdff;
-      $evenHover:#cef8fc;
-      tr.odd, tr.oddNoHover {
+      $even: #e8fdff;
+      $evenHover: #cef8fc;
+      tr.odd,
+      tr.oddNoHover {
         background: $odd;
       }
       tr.odd:hover {
         background: $oddHover;
       }
       tr.odd td.expanded:hover {
-        background: $odd
+        background: $odd;
       }
-      tr.even, tr.evenNoHover {
+      tr.even,
+      tr.evenNoHover {
         background: $even;
       }
       tr.even:hover {
         background: $evenHover;
       }
       tr.even td.expanded:hover {
-        background: $even
+        background: $even;
       }
     }
     .bookings {
       border: 1px solid red;
       thead {
-        background: #fff
+        background: #fff;
       }
       tbody {
         tr.odd {
@@ -59,6 +66,40 @@
           background: #fff;
         }
       }
+    }
+  }
+
+  #bookings {
+    thead {
+      position: sticky;
+      top: 0;
+      background: #fff;
+    }
+    tr.odd {
+      background: #f4f4f4;
+    }
+    tr.even {
+      background: #eaeaea;
+    }
+    .propertyDetails {
+      margin-left: 1rem;
+    }
+    .paymentBtn {
+      margin-left: 1rem;
+    }
+  }
+  #loading {
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    background: RGBA(255, 255, 255, 0.8);
+    > div {
+      top: 50%;
+      position: absolute;
+      left: 50%;
     }
   }
 }

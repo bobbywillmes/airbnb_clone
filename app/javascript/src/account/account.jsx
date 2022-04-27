@@ -58,23 +58,21 @@ class Account extends React.Component {
   render() {
     return (
       <Layout>
-        <div id="account">
-          <div className="container">
-            <div className="row">
-              <div className="col">
-                <h3>Welcome {this.state.username}</h3>
-                <button id="logoutBtn" className="btn btn-secondary" onClick={this.logout}>Logout</button>
-                <hr />
-                <div className="properties">
-                  <h3>My properties &amp; Bookings  <small>(click row to see bookings)</small></h3>
-                  <Properties properties={this.state.properties} />
-                  <a id="createNew" className="btn btn-danger" href="/property/new">Create New Property</a>
-                </div>
-                <hr />
-                <div className="bookings">
-                  <h3>My bookings at other places</h3>
-                  <Bookings bookings={this.state.bookings} />
-                </div>
+        <div id="account" className="container">
+          <div className="row">
+            <div className="col">
+              <h3>Welcome {this.state.username}</h3>
+              <button id="logoutBtn" className="btn btn-secondary" onClick={this.logout}>Logout</button>
+              <hr />
+              <div className="properties">
+                <h3>My properties &amp; Bookings  <small>(click row to see bookings)</small></h3>
+                <Properties properties={this.state.properties} />
+                <a id="createNew" className="btn btn-danger" href="/property/new">Create New Property</a>
+              </div>
+              <hr />
+              <div className="bookings">
+                <h3>My bookings at other places</h3>
+                <Bookings bookings={this.state.bookings} />
               </div>
             </div>
           </div>

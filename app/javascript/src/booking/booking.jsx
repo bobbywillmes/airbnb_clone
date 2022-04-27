@@ -2,6 +2,28 @@ import React from 'react'
 import Layout from '@src/layout'
 import { safeCredentials, handleErrors } from '@utils/fetchHelper'
 import './booking.scss'
+import { formatDate } from '../utils/dates'
+
+function NoPaymentNotice(props) {
+  if (props.charge == null || props.charge.complete === false) {
+    return (
+      <>
+        <h3 className="text-danger">But, you still need to complete payment for your reservation!</h3>
+        <hr />
+      </>
+    )
+  }
+  return null
+}
+
+function PropertyImage(props) {
+  if (props.propertyImage == null) {
+    return null
+  }
+  return (
+    <img src={props.propertyImage} alt="" className="img-fluid" />
+  )
+}
 
 class Booking extends React.Component {
   state = {
@@ -11,7 +33,8 @@ class Booking extends React.Component {
     nights: null,
     nightsStr: '',
     propertyDetailsStr: '',
-    chargeAmountStr: ''
+    chargeAmountStr: '',
+    propertyImage: null
   }
 
   componentDidMount() {
@@ -22,14 +45,15 @@ class Booking extends React.Component {
     fetch(`/api/booking/${this.props.data.booking_id}/success`)
       .then(handleErrors)
       .then(res => {
-        console.log(res.success)
-        this.setState({ booking: res.success.booking })
-        this.setState({ property: res.success.property })
-        this.setState({ charge: res.success.charge })
-        this.setState({ nights: res.success.nights })
+        console.log(res);
+        this.setState({ booking: res.details.booking })
+        this.setState({ property: res.details.property })
+        this.setState({ charge: res.details.charge[res.details.charge.length - 1] })
+        this.setState({ nights: res.details.nights })
         this.nights()
         this.propertyDetails()
         this.chargeAmount()
+        this.setPropertyImage(res)
       })
   }
 
@@ -66,25 +90,33 @@ class Booking extends React.Component {
 
   chargeAmount = () => {
     let chargeAmountStr = ''
-    if(!this.state.charge) {
+    if (!this.state.charge) {
       console.log(`there is no recorded charge`)
       chargeAmountStr = 'N/A'
     } else {
-      chargeAmountStr = this.state.charge.amount + ' ' + this.state.charge.currency
+      chargeAmountStr = Number(this.state.charge.amount).toFixed(2) + ' ' + this.state.charge.currency.toUpperCase()
     }
     this.setState({ chargeAmountStr: chargeAmountStr })
+  }
+
+  setPropertyImage = (res) => {
+    if (res.details.images.length > 0) {
+      this.setState({ propertyImage: res.details.images[0].src })
+    } else if (res.details.property.image_url !== null) {
+      this.setState({ propertyImage: res.details.property.image_url })
+    }
   }
 
   render() {
     return (
       <Layout>
         <div className="container booking">
-          <h1>Congrats!</h1>
           <h3>Your reservation has been booked</h3>
           <hr />
+          <NoPaymentNotice charge={this.state.charge} />
           <h4>{this.state.property.title} - {this.state.property.city}, {this.state.property.country}</h4>
           <div className="row align-items-center">
-            <div className="col-7 details">
+            <div className="col-12 col-md-7 details">
               <div>
                 <span className="title">Details:</span> <br />
                 <span className="value">{this.state.propertyDetailsStr}</span>
@@ -95,16 +127,16 @@ class Booking extends React.Component {
               </div>
               <div>
                 <span className="title">Dates:</span> <br />
-                <span className="value">{this.state.booking.start_date} - {this.state.booking.end_date} ({this.state.nightsStr})</span>
+                <span className="value">{formatDate(this.state.booking.start_date)} - {formatDate(this.state.booking.end_date)} ({this.state.nightsStr})</span>
               </div>
               <div>
                 <span className="title">Charge Amount:</span> <br />
-                {/* <span className="value">{this.state.charge.amount}  {this.state.charge.currency}</span> */}
                 <span className="value">{this.state.chargeAmountStr}</span>
               </div>
             </div>
-            <div className="col-5">
-              <img src={this.state.property.image_url} alt="" />
+            <div className="col-12 col-md-5">
+              {/* <img src={this.state.propertyImage} alt="" className="img-fluid" /> */}
+              <PropertyImage propertyImage={this.state.propertyImage} />
             </div>
           </div>
         </div>

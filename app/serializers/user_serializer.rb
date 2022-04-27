@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :username, :bookings
+  attributes :id, :username, :bookings, :properties
   has_many :bookings
   has_many :properties
 

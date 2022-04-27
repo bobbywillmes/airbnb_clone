@@ -4,6 +4,7 @@ import { DateRangePicker } from 'react-dates'
 import { safeCredentials, handleErrors } from '@utils/fetchHelper'
 
 import 'react-dates/lib/css/_datepicker.css'
+import { initiateStripeCheckout } from '../../api/checkout'
 
 class BookingWidget extends React.Component {
   state = {
@@ -14,28 +15,6 @@ class BookingWidget extends React.Component {
     error: false,
   }
 
-  initiateStripeCheckout = (booking_id) => {
-    return fetch(`/api/charges?booking_id=${booking_id}&cancel_url=${window.location.pathname}`, safeCredentials({
-      method: 'POST',
-    }))
-      .then(handleErrors)
-      .then(response => {
-        const stripe = Stripe(`${process.env.STRIPE_PUBLISHABLE_KEY}`)
-        stripe.redirectToCheckout({
-          // Make the id field from the Checkout Session creation API response
-          // available to this file, so you can provide it as parameter here
-          // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
-          sessionId: response.charge.checkout_session_id,
-        }).then((result) => {
-          // If `redirectToCheckout` fails due to a browser or network
-          // error, display the localized error message to your customer
-          // using `result.error.message`.
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      })
-  }
 
   submitBooking = (e) => {
     if (e) { e.preventDefault(); }
@@ -56,7 +35,7 @@ class BookingWidget extends React.Component {
       .then(handleErrors)
       .then(response => {
         console.log(response)
-        return this.initiateStripeCheckout(response.booking.id)
+        return initiateStripeCheckout(response.booking.id)
       })
       .catch(error => {
         console.log(error)

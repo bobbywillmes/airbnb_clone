@@ -22,7 +22,8 @@
     "react-alert-template-basic": "^1.0.2",
     "react-dates": "^21.8.0",
     "react-dom": "^16.8.6",
-    "react-image-file-resizer": "^0.4.7"
+    "react-image-file-resizer": "^0.4.7",
+    "react-loading": "^2.0.3"
   },
   "devDependencies": {
     "webpack-dev-server": "^3.7.1"
