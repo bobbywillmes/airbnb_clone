@@ -1,24 +1,20 @@
-# README
+# Full Stack Airbnb
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Built with Ruby on Rails & React.
 
-Things you may want to cover:
+## Features
 
-* Ruby version
+Create a user, then sign in. \
+ Create a property, upload multiple photos. \
+ Book a property, complete payment with Stripe.
 
-* System dependencies
+## Start scripts
 
-* Configuration
+to start server:\
+ yarn run start\
+to start webpack watch (for React frontend):\
+ yarn run dev
 
-* Database creation
+## On the web
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Check it out on [Heroku](https://safe-cliffs-31420.herokuapp.com/).
